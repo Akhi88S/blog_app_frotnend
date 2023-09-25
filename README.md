@@ -1,5 +1,6 @@
 # Blog App with React JS
 
+
 ![blog landing](./public/main-page.png)
 A blog application with React and Firebase as a backend
 
