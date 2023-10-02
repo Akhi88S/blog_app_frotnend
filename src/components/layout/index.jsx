@@ -1,13 +1,13 @@
 import React from "react";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import PostList from "./PostList";
+import RootPostList from "./root.postList";
 
 export default function Home() {
   return (
     <div>
       <Navbar />
-      <PostList />
+      <RootPostList />
       <Footer />
     </div>
   );

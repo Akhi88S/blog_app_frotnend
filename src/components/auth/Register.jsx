@@ -14,28 +14,28 @@ import {
   FormErrorMessage,
   Tooltip,
 } from "@chakra-ui/react";
-import {LOGIN, ROOT} from "../../lib/routes";
-import {Link as routerLink} from "react-router-dom";
-import {useForm} from "react-hook-form";
+import { LOGIN, ROOT } from "../../lib/routes";
+import { Link as routerLink } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import {
   usernameValidate,
   passwordValidate,
   emailValidate,
 } from "../../utils/form-validation";
-import {useRegister} from "../../hooks/auths";
+import { useRegister } from "../../hooks/auths";
 
 export default function Register() {
-  const {register: signup, isLoading} = useRegister();
+  const { register: signup, isLoading } = useRegister();
   const {
     register,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm();
 
   async function handleRegister(data) {
     signup({
       username: data.username,
-      email: data.email,
+      email: data.email.toLowerCase(),
       password: data.password,
       redirectTo: ROOT,
     });
@@ -65,11 +65,11 @@ export default function Register() {
         >
           <form onSubmit={handleSubmit(handleRegister)}>
             <Stack spacing={4}>
-              <FormControl id='username' isInvalid={errors.username}>
+              <FormControl id="username" isInvalid={errors.username}>
                 <FormLabel>UserName</FormLabel>
                 <Input
-                  type='text'
-                  placeholder='username'
+                  type="text"
+                  placeholder="username"
                   {...register("username", usernameValidate)}
                 />
                 <FormErrorMessage>
@@ -77,11 +77,11 @@ export default function Register() {
                 </FormErrorMessage>
               </FormControl>
 
-              <FormControl id='email' isInvalid={errors.email}>
+              <FormControl id="email" isInvalid={errors.email}>
                 <FormLabel>Email address</FormLabel>
                 <Input
-                  type='email'
-                  placeholder='user@email.com'
+                  type="email"
+                  placeholder="user@email.com"
                   {...register("email", emailValidate)}
                 />
                 <FormErrorMessage>
@@ -89,11 +89,11 @@ export default function Register() {
                 </FormErrorMessage>
               </FormControl>
 
-              <FormControl id='password' isInvalid={errors.password}>
+              <FormControl id="password" isInvalid={errors.password}>
                 <FormLabel>Password</FormLabel>
                 <Input
-                  type='password'
-                  placeholder='Password123'
+                  type="password"
+                  placeholder="Password123"
                   {...register("password", passwordValidate)}
                 />
                 <FormErrorMessage>
@@ -104,14 +104,14 @@ export default function Register() {
               <Stack spacing={10} pt={2}>
                 <Tooltip label={ladelBtn}>
                   <Button
-                    loadingText='Submitting'
-                    size='lg'
+                    loadingText="Submitting"
+                    size="lg"
                     bg={"blue.400"}
                     color={"white"}
                     _hover={{
                       bg: "blue.500",
                     }}
-                    type='submit'
+                    type="submit"
                     isLoading={isLoading}
                   >
                     Sign up

@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { newPostObs, setNewPost } from "../utils/utils";
 const BASE_URL = "http://127.0.0.1:3000";
-const getPosts = (id) => {
+const getPosts = (id, searchValue) => {
+  console.log("id,title", id, searchValue);
   return axios
-    .get(`${BASE_URL}/post/get${id ? `?id=${id}` : ""}`)
+    .get(
+      `${BASE_URL}/post/get${id || searchValue ? `?` : ""}${
+        id ? `id=${id}` : ""
+      }${searchValue ? `&search=${searchValue}` : ""}`
+    )
     .then((res) => {
       return res?.data?.data;
     })
@@ -12,7 +17,7 @@ const getPosts = (id) => {
       return [];
     });
 };
-export function useGetPosts(id = null, setCurrentPost) {
+export function useGetPosts(id = null, setCurrentPost = null, searchValue) {
   const [posts, setPosts] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
@@ -21,7 +26,7 @@ export function useGetPosts(id = null, setCurrentPost) {
     setLoading(true);
 
     function callGetPosts() {
-      getPosts(id)
+      getPosts(id, searchValue)
         .then((res) => {
           console.log("posts", res);
           if (id) setCurrentPost(res);
@@ -44,7 +49,7 @@ export function useGetPosts(id = null, setCurrentPost) {
     return () => {
       obs?.unsubscribe();
     };
-  }, [id]);
+  }, [id, searchValue]);
 
   return { posts, isLoading };
 }

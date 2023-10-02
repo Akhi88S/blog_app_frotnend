@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Heading,
@@ -19,12 +19,19 @@ import { useUser } from "../../hooks/user";
 const SinglePost = ({ post }) => {
   const { user, isLoading: authLoading } = useAuth();
   const { id, likes, uid } = post;
-  const isLiked = likes.includes(user?.id);
+  const [isLiked, setIsLiked] = useState(false);
+  const userId = "test_user";
   const { toggleLike, isLoading } = useToggleLike({
     id,
     isLiked,
-    uid: user?.id,
+    uid: uid,
+    post,
+    setIsLiked,
   });
+  useEffect(() => {
+    setIsLiked(likes.includes(userId));
+  }, [post?.id]);
+  console.log("post prop", id, isLiked, uid);
   const { deletePost, isLoading: deleteLoading } = useDeletePost(id);
   const { user: users, isLoading: userLoading } = useUser(uid);
   return (
