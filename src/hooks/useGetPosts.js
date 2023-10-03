@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { newPostObs, setNewPost } from "../utils/utils";
-const BASE_URL = "http://127.0.0.1:3000";
+const BASE_URL = "http://127.0.0.1:5000";
 const getPosts = (id, searchValue) => {
   console.log("id,title", id, searchValue);
   return axios

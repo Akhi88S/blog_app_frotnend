@@ -14,26 +14,22 @@ import { formatDistanceToNow } from "date-fns";
 import { AiTwotoneHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { useDeletePost, useToggleLike } from "../../hooks/posts";
 import { Link as routerLink } from "react-router-dom";
-import { useUser } from "../../hooks/user";
 
 const SinglePost = ({ post }) => {
-  const { user, isLoading: authLoading } = useAuth();
-  const { id, likes, uid } = post;
+  const { user } = useAuth();
+  const { id, likes, uId } = post;
   const [isLiked, setIsLiked] = useState(false);
-  const userId = "test_user";
   const { toggleLike, isLoading } = useToggleLike({
     id,
     isLiked,
-    uid: uid,
+    userId: user?.id,
     post,
     setIsLiked,
   });
   useEffect(() => {
-    setIsLiked(likes.includes(userId));
-  }, [post?.id]);
-  console.log("post prop", id, isLiked, uid);
+    setIsLiked(likes.includes(user?.id));
+  }, [post?.id,user?.id]);
   const { deletePost, isLoading: deleteLoading } = useDeletePost(id);
-  const { user: users, isLoading: userLoading } = useUser(uid);
   return (
     <>
       <Box w="100%" key={post.id}>
@@ -73,23 +69,27 @@ const SinglePost = ({ post }) => {
         </Text>
         <Box mt={"10px"}>
           <Flex align={"center"}>
-            <Avatar name={users?.username} size={"sm"} />
+            <Avatar name={user?.name} size={"sm"} />
             <Text casing={"capitalize"}>
               <span style={{ paddingLeft: "10px" }}>
                 {formatDistanceToNow(post.date)} ago
               </span>
             </Text>
-            <IconButton
-              colorScheme="red"
-              onClick={toggleLike}
-              isLoading={authLoading || isLoading}
-              size="md"
-              icon={isLiked ? <AiTwotoneHeart /> : <AiOutlineHeart />}
-              isRound
-              variant="ghost"
-            />
-            <Text> {likes.length}</Text>
-            {!authLoading && user?.id === uid && (
+            {user?.id && (
+              <>
+                <IconButton
+                  colorScheme="red"
+                  onClick={toggleLike}
+                  isLoading={isLoading}
+                  size="md"
+                  icon={isLiked ? <AiTwotoneHeart /> : <AiOutlineHeart />}
+                  isRound
+                  variant="ghost"
+                />
+                <Text> {likes.length}</Text>
+              </>
+            )}
+            {user?.id === uId && (
               <IconButton
                 colorScheme="red"
                 size="lg"

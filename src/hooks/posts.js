@@ -22,7 +22,7 @@ import axios from "axios";
 import { useGetPosts } from "./useGetPosts";
 import { setNewPost } from "../utils/utils";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://127.0.0.1:5000";
 
 export function useAddUpdatePost() {
   const [isLoading, setLoading] = useState(false);
@@ -73,16 +73,17 @@ export function usePosts(uid = null) {
   return { posts, isLoading };
 }
 
-export function useToggleLike({ id, isLiked, uid, post, setIsLiked }) {
+export function useToggleLike({ id, isLiked, userId, post, setIsLiked }) {
   const [isLoading, setLoading] = useState(false);
 
   async function toggleLike() {
+    console.log("postedlike", id, isLiked, userId, post);
     setLoading(true);
     await axios.patch(`${BASE_URL}/post/update?id=${id}`, {
       ...post,
       likes: !isLiked
-        ? [...post?.likes, uid]
-        : post?.likes.filter((item) => item !== uid),
+        ? [...post?.likes, userId]
+        : post?.likes.filter((item) => item !== userId),
     });
 
     setLoading(false);
@@ -120,6 +121,7 @@ export function useDeletePost(id) {
         duration: 5000,
       });
 
+      setNewPost(true);
       setLoading(false);
     }
   }

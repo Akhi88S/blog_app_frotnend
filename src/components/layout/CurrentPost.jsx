@@ -33,10 +33,17 @@ import Navbar from "./Navbar";
 import Newpost from "../posts/NewPost";
 import { useGetPosts } from "../../hooks/useGetPosts";
 import { useDeletePost } from "../../hooks/posts";
+import { useAuth } from "../../hooks/auths";
 
 function CurrentPost() {
   const { postId } = useParams();
-  const [currentPost, setCurrentPost] = useState([]);
+  const { user } = useAuth();
+  const [currentPost, setCurrentPost] = useState({
+    title: "",
+    desc: "",
+    imageUrl: "",
+    uId: "",
+  });
   const [showUpdateBox, setShowUpdateBox] = useState(false);
   const { postData, isLoading } = useGetPosts(postId, setCurrentPost);
   const { deletePost } = useDeletePost(postId);
@@ -108,29 +115,32 @@ function CurrentPost() {
               variant="ghost"
             />
           </motion.button>
-          <Flex justifyContent="flex-end" alignItems="flex-end">
-            <Stack direction="column">
-              <Wrap spacing={4}>
-                <WrapItem>
-                  <Button colorScheme="blue" onClick={handleEditClick}>
-                    Edit
-                  </Button>
-                </WrapItem>
-                <WrapItem>
-                  <Link
-                    textDecoration="none"
-                    _hover={{ textDecoration: "none" }}
-                    as={routerLink}
-                    to={`/`}
-                  >
-                    <Button colorScheme="red" onClick={handleDeleteClick}>
-                      Delete
+          {console.log("çurrent post", currentPost, user)}
+          {currentPost?.uId === user?.id && (
+            <Flex justifyContent="flex-end" alignItems="flex-end">
+              <Stack direction="column">
+                <Wrap spacing={4}>
+                  <WrapItem>
+                    <Button colorScheme="blue" onClick={handleEditClick}>
+                      Edit
                     </Button>
-                  </Link>
-                </WrapItem>
-              </Wrap>
-            </Stack>
-          </Flex>
+                  </WrapItem>
+                  <WrapItem>
+                    <Link
+                      textDecoration="none"
+                      _hover={{ textDecoration: "none" }}
+                      as={routerLink}
+                      to={`/`}
+                    >
+                      <Button colorScheme="red" onClick={handleDeleteClick}>
+                        Delete
+                      </Button>
+                    </Link>
+                  </WrapItem>
+                </Wrap>
+              </Stack>
+            </Flex>
+          )}
           <Heading as="h2">{currentPost.title}</Heading>
 
           <Divider marginTop="5" />

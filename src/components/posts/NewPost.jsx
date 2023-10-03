@@ -25,7 +25,7 @@ export default function SimpleCard({
   setCurrentPost,
 }) {
   const { addUpdatePost, isLoading } = useAddUpdatePost();
-  const { user, authLoading } = useAuth();
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -35,9 +35,10 @@ export default function SimpleCard({
   const toast = useToast();
 
   const handlePost = (data) => {
+    console.log('data user',data,user)    
     addUpdatePost({
       id: formData?.id,
-      uid: user?.id || "test_user",
+      uId: user?.id || "test_user",
       title: data.title,
       desc: data.desc,
       imageUrl: data.imageUrl,
@@ -46,7 +47,7 @@ export default function SimpleCard({
     if (isEdit) {
       setCurrentPost({
         ...formData,
-        uid: user?.id || "test_user",
+        uId: user?.id || "test_user",
         title: data.title,
         desc: data.desc,
         imageUrl: data.imageUrl,

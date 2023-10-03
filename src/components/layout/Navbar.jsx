@@ -34,11 +34,12 @@ import Newpost from "../posts/NewPost";
 import { ModalBody } from "react-bootstrap";
 import { useLogout } from "../../hooks/auths";
 import { useAuth } from "../../hooks/auths";
+import { useEffect, useLayoutEffect } from "react";
 
 export default function Navbar() {
-  const { colorMode, toggleColorMode } = useColorMode();
-  const { logout, isLoading } = useLogout();
-  const { user, authLoading } = useAuth();
+  const { colorMode, toggleColorMode,setColorMode } = useColorMode();
+  const { logout } = useLogout();
+  const { user } = useAuth();
   const isMobile = window?.innerHeight < 1024;
   const {
     isOpen: isMenuOpen,
@@ -56,6 +57,9 @@ export default function Navbar() {
     { id: 2, path: LOGIN, name: "Sign in" },
     { id: 3, path: REGISTER, name: "Create an account" },
   ];
+  useLayoutEffect(()=>{
+    setColorMode('dark')
+  },[])
   return (
     <Container maxW="1300px">
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
@@ -155,7 +159,7 @@ export default function Navbar() {
               {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
             </Button>
 
-            {!user ? (
+            {user ? (
               <Button
                 variant={"solid"}
                 colorScheme={"teal"}
@@ -166,21 +170,7 @@ export default function Navbar() {
               >
                 Create Post
               </Button>
-            ) : (
-              <Tooltip label="Activate me, captain! Login required">
-                <Button
-                  variant={"solid"}
-                  colorScheme={"teal"}
-                  // isDisabled={true}
-                  size={"sm"}
-                  mr={4}
-                  onClick={onModalOpen}
-                  leftIcon={<AddIcon />}
-                >
-                  Action
-                </Button>
-              </Tooltip>
-            )}
+            ) : null}
             {/* Modal */}
             <Modal
               closeOnOverlayClick={false}
@@ -203,7 +193,6 @@ export default function Navbar() {
                 colorScheme="teal"
                 size="sm"
                 onClick={logout}
-                isLoading={isLoading}
               >
                 <Icon as={RiLogoutCircleLine} />
               </Button>

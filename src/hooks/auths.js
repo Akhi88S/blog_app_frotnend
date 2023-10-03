@@ -12,30 +12,26 @@ import { LOGIN, ROOT } from "../lib/routes";
 import isUsernameExists from "../utils/isUsernameExists";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://127.0.0.1:5000";
 
 // This code is for fatching User data
 export function useAuth() {
-  const [authUser, authLoading, error] = useAuthState(auth);
-  const [isLoading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const ref = doc(db, "users", authUser.uid);
-      const docSnap = await getDoc(ref);
-      setUser(docSnap.data());
-      setLoading(false);
-    }
+    const handleUserStorage = (evt) => {
+      const userDetails = JSON.parse(
+        localStorage.getItem("userDetail") || "{}"
+      );
+      if (userDetails?.email) {
+        setUser(userDetails);
+      }
+    };
 
-    if (!authLoading) {
-      if (authUser) fetchData();
-      else setLoading(false); // Not signed in
-    }
-  }, [authLoading]);
+    handleUserStorage();
+  }, [localStorage.getItem("userDetail")]);
 
-  return { user, isLoading, error };
+  return { user };
 }
 
 // This code is for Login functionlity
@@ -48,7 +44,13 @@ export function useLogin() {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const res = await axios.post(`${BASE_URL}/post/login`, {
+        email,
+        password,
+      });
+      console.log("res data", res?.data?.userData);
+      setToLocalStorage("userDetail", { ...res?.data?.userData });
+      navigate(redirectTo);
       toast({
         title: "You are logged in",
         status: "success",
@@ -56,11 +58,10 @@ export function useLogin() {
         position: "top",
         duration: 5000,
       });
-      navigate(redirectTo);
     } catch (error) {
       toast({
         title: "Logging in failed",
-        description: error.message,
+        description: "Unautorized" || error.message,
         status: "error",
         isClosable: true,
         position: "top",
@@ -77,32 +78,22 @@ export function useLogin() {
 
 // This code is for logout functionlity
 export function useLogout() {
-  const [signOut, isLoading, error] = useSignOut(auth);
   const toast = useToast();
   const navigate = useNavigate();
 
   async function logout() {
-    if (await signOut()) {
-      toast({
-        title: "Successfully logged out",
-        status: "success",
-        isClosable: true,
-        position: "top",
-        duration: 5000,
-      });
-      navigate(LOGIN);
-    }
-    // else {
-    //     toast({
-    //         title: "Having difficulty to logging out of you ",
-    //         status: "warning",
-    //         isClosable: true,
-    //         position: "bottom-left",
-    //         duration: 5000,
-    //     });
+    localStorage.removeItem("userDetail");
+    toast({
+      title: "Successfully logged out",
+      status: "success",
+      isClosable: true,
+      position: "top",
+      duration: 5000,
+    });
+    navigate(LOGIN);
   }
 
-  return { logout, isLoading };
+  return { logout };
 }
 
 // This code is for user register functionlity
@@ -137,6 +128,7 @@ export function useRegister() {
           email,
           password,
         });
+        console.log("sign up res", res);
 
         toast({
           title: "Account created",
@@ -147,6 +139,11 @@ export function useRegister() {
           duration: 5000,
         });
 
+        setToLocalStorage("userDetail", {
+          email,
+          username,
+          id: res?.data?.user?.id,
+        });
         navigate(redirectTo);
       } catch (error) {
         toast({
@@ -165,3 +162,12 @@ export function useRegister() {
 
   return { register, isLoading };
 }
+
+export const setToLocalStorage = (key, userData) => {
+  console.log("key, userdata", key);
+  localStorage.setItem("userDetail", JSON.stringify(userData));
+};
+
+export const removeDataFromLocalStorage = (key) => {
+  localStorage.removeItem(key);
+};
