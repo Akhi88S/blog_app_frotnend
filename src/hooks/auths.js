@@ -12,7 +12,7 @@ import { LOGIN, ROOT } from "../lib/routes";
 import isUsernameExists from "../utils/isUsernameExists";
 import axios from "axios";
 
-const BASE_URL = "http://127.0.0.1:5000";
+const BASE_URL = import.meta?.env?.VITE_BASE_URL;
 
 // This code is for fatching User data
 export function useAuth() {
@@ -61,7 +61,7 @@ export function useLogin() {
     } catch (error) {
       toast({
         title: "Logging in failed",
-        description: "Unautorized" || error.message,
+        description: error?.response?.data?.message || "Unautorized",
         status: "error",
         isClosable: true,
         position: "top",
@@ -128,7 +128,6 @@ export function useRegister() {
           email,
           password,
         });
-        console.log("sign up res", res);
 
         toast({
           title: "Account created",
@@ -148,7 +147,7 @@ export function useRegister() {
       } catch (error) {
         toast({
           title: "Signing Up failed",
-          description: error.message,
+          description: error?.response?.data?.message,
           status: "error",
           isClosable: true,
           position: "top",
