@@ -12,7 +12,7 @@ import { LOGIN, ROOT } from "../lib/routes";
 import isUsernameExists from "../utils/isUsernameExists";
 import axios from "axios";
 
-const BASE_URL = import.meta?.env?.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // This code is for fatching User data
 export function useAuth() {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { newPostObs, setNewPost } from "../utils/utils";
-const BASE_URL = import.meta?.env?.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 const getPosts = (id, searchValue) => {
-  console.log("id,title", id, searchValue);
+  console.log("id,title", id, searchValue,BASE_URL,import.meta.env);
   return axios
     .get(
       `${BASE_URL}/post/get${id || searchValue ? `?` : ""}${

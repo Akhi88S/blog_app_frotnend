@@ -22,7 +22,7 @@ import axios from "axios";
 import { useGetPosts } from "./useGetPosts";
 import { setNewPost } from "../utils/utils";
 
-const BASE_URL = import.meta?.env?.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export function useAddUpdatePost() {
   const [isLoading, setLoading] = useState(false);
